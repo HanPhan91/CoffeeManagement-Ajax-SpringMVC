@@ -1,0 +1,48 @@
+body {
+    margin: 0 auto;
+}
+
+.table-title {
+    background: #299be4;
+    color: #fff;
+    padding: 16px 30px;
+    border-radius: 3px 3px 0 0;
+}
+
+.table-title .btn {
+    float: right;
+    min-width: 50px;
+    outline: none !important;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.show {
+    display: block !important;
+}
+
+.hide{
+    display: none !important;
+}
+
+.modal-alert-danger {
+    padding: 10px 35px;
+    margin-bottom: 15px;
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+label.error {
+    display: list-item !important;
+    margin-top: 5px !important;
+    color: #842029 !important;
+}
+
+input.error {
+    border: solid 1px red !important;
+}
+
+#tblDrink tbody td , #tblStaff tbody td{
+    color: #5e5e5e;
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+
+    <th:block th:replace="layout/head :: head"/>
+    <meta charset="UTF-8">
+    <title>Quản lý nhân viên</title>
+    <th:block th:replace="layout/firstScript :: firstScript"/>
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"/>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <th:block th:replace="layout/topbar :: topbar"/>
+
+            <!-- Main page -->
+            <div class="container-fluid">
+                <!--Header-->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý nhân viên</h1>
+                </div>
+                <div class="row">
+                    <div class="col mb-2">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary create">
+                                <i class="fa fa-plus-square"></i>
+                                Thêm nhân viên mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-hover" id="tblStaff">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Tên nhân viên</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Số điện thoại</th>
+                            <th scope="col">Địa chỉ</th>
+                            <th scope="col" colspan="2" class="text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="staff: ${staffs}">
+                            <tr th:id="'tr_'+ ${staff.id}">
+                                <td th:text="${staff.id}"></td>
+                                <td th:text="${staff.fullName}"></td>
+                                <td th:text="${staff.email}"></td>
+                                <td th:text="${staff.phone}"></td>
+                                <td th:text="${staff.address}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary edit" th:data-id="${staff.id}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger delete"
+                                            th:data-id="${staff.id}">
+                                        <i class="fa fa-ban"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Main Page-->
+        </div>
+        <!-- End Main Content-->
+        <th:block th:replace="layout/footer :: footer"/>
+    </div>
+</div>
+<th:block th:replace="layout/script :: script"/>
+<th:block th:replace="staff/modalCreateStaff :: modalCreateStaff"/>
+<th:block th:replace="staff/modalUpdateStaff :: modalUpdateStaff"/>
+<th:block th:replace="staff/modalDeleteStaff :: modalDeleteStaff"/>
+<script>
+
+    function handlerShowModalEditStaff() {
+        $("button.edit").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/staffs/" + id
+            })
+                .done(function (data) {
+                    $("#idStaffUpdate").val(data.id);
+                    $("#staffNameUpdate").val(data.fullName);
+                    $("#staffEmailUpdate").val(data.email);
+                    $("#staffPhoneUpdate").val(data.phone);
+                    $("#staffAddressUpdate").val(data.address);
+                    $("#modalUpdateStaff").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal update error");
+                })
+        });
+    }
+
+    function handlerShowModalDeleteStaff() {
+        $("button.delete").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/staffs/" + id
+            })
+                .done(function (data) {
+                    $("#idStaffDelete").val(data.id);
+                    $("#staffNameDelete").val(data.fullName);
+                    $("#staffEmailDelete").val(data.email);
+                    $("#staffPhoneDelete").val(data.phone);
+                    $("#staffAddressDelete").val(data.address);
+                    $("#modalDeleteStaff").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal delete error");
+                })
+        });
+    }
+
+    handlerShowModalEditStaff();
+    handlerShowModalDeleteStaff();
+</script>
+</body>
+</html>

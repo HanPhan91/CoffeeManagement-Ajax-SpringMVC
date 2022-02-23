@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+
+    <th:block th:replace="layout/head :: head"/>
+    <meta charset="UTF-8">
+    <title>Quản lý thức uống</title>
+    <th:block th:replace="layout/firstScript :: firstScript"/>
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"/>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <th:block th:replace="layout/topbar :: topbar"/>
+
+            <!-- Main page -->
+            <div class="container-fluid">
+                <!--Header-->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Quản lý thức uống</h1>
+                </div>
+                <div class="row">
+                    <div class="col mb-2">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary create">
+                                <i class="fa fa-plus-square"></i>
+                                Thêm thức uống mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-hover" id="tblDrink">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Tên thức uống</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Mô tả</th>
+                            <th scope="col">Ngày tạo</th>
+                            <th scope="col" colspan="2" class="text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="drink: ${drinks}">
+                            <tr th:id="'tr_'+ ${drink.id}">
+                                <td th:text="${drink.id}"></td>
+                                <td th:text="${drink.drinkName}"></td>
+                                <td class="drinkPrice"></td>
+                                <td th:text="${drink.description}"></td>
+                                <td th:text="${drink.createdAt}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary edit" th:data-id="${drink.id}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger delete"
+                                            th:data-id="${drink.id}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <script th:inline="javascript">
+                                var id = [[${drink.id}]];
+                                var price = [[${drink.price}]];
+                                $("#tr_" + id + " .drinkPrice").append(separator(price));
+                            </script>
+                        </th:block>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Main Page-->
+        </div>
+        <!-- End Main Content-->
+        <th:block th:replace="layout/footer :: footer"/>
+    </div>
+</div>
+<th:block th:replace="layout/script :: script"/>
+<th:block th:replace="drink/modalCreateDrink :: modalCreateDrink"/>
+<th:block th:replace="drink/modalUpdateDrink :: modalUpdateDrink"/>
+<th:block th:replace="drink/modalDeleteDrink :: modalDeleteDrink"/>
+<script>
+    function handlerShowModalEdit() {
+        $("button.edit").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/drinks/" + id
+            })
+                .done(function (data) {
+                    $("#idDrinkUpdate").val(data.id);
+                    $("#drinkNameUpdate").val(data.drinkName);
+                    $("#priceDrinkUpdate").val(separator(data.price));
+                    $("#desDrinkUpdate").val(data.description);
+                    $("#modalUpdateDrink").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal withdraw error");
+                })
+        });
+    }
+
+    function handlerShowModalDelete() {
+        $("button.delete").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/drinks/" + id
+            })
+                .done(function (data) {
+                    $("#idDrinkDelete").val(data.id);
+                    $("#drinkNameDelete").val(data.drinkName);
+                    $("#priceDrinkDelete").val(separator(data.price));
+                    $("#desDrinkDelete").val(data.description);
+                    $("#modalDeleteDrink").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal delete error");
+                })
+        });
+    }
+    handlerShowModalEdit();
+    handlerShowModalDelete();
+</script>
+</body>
+</html>

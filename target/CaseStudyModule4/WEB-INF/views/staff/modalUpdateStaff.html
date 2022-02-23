@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalUpdateStaff">
+    <div class="modal" tabindex="-1" id="modalUpdateStaff">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật nhân viên</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+
+                    </div>
+                    <form id="frmUpdateStaff">
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <input type="text" id="idStaffUpdate" hidden>
+                                <label for="staffNameUpdate" class="form-label fw-bold">Tên nhân viên</label>
+                                <input type="text" class="form-control" id="staffNameUpdate" name="staffNameUpdate">
+                            </div>
+                            <div class=" mb-3 col-6">
+                                <label for="staffEmailUpdate" class="form-label fw-bold">Email</label>
+                                <input type="text" class="form-control" id="staffEmailUpdate" name="staffEmailUpdate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label for="staffPhoneUpdate" class="form-label fw-bold">Số điện thoại</label>
+                                <input type="text" class="form-control" id="staffPhoneUpdate" name="staffPhoneUpdate" >
+                            </div>
+                            <div class=" mb-3 col-6">
+                                <label for="staffAddressUpdate" class="form-label fw-bold">Địa chỉ</label>
+                                <input type="text" class="form-control" id="staffAddressUpdate" name="staffAddressUpdate" >
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline-primary" id="btnUpdateStaff">Sửa nhân viên</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateStaff() {
+            let staff = {
+                id: $("#idStaffUpdate").val(),
+                fullName: $("#staffNameUpdate").val(),
+                email: $("#staffEmailUpdate").val(),
+                phone: $("#staffPhoneUpdate").val(),
+                address: $("#staffAddressUpdate").val()
+            };
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "PUT",
+                url: "/api/staffs/update",
+                data: JSON.stringify(staff)
+            })
+                .done(function (data) {
+                    let str = `
+                    <tr id="'tr_'+ ${data.id}">
+                                <td>${data.id}</td>
+                                <td>${data.fullName}</td>
+                                <td>${data.email}</td>
+                                <td>${data.phone}</td>
+                                <td>${data.address}</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary edit" data-id="${data.id}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger delete"
+                                            data-id="${data.id}">
+                                        <i class="fa fa-ban"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                    `;
+                    let currentRow = $("#tr_" + data.id);
+                    currentRow.replaceWith(str);
+                    $("#modalUpdateStaff").modal("hide");
+                    $("#frmUpdateStaff")[0].reset();
+                    swal("Cập nhật thành công","Thông tin nhân viên đã được thay đổi", "success");
+                    handlerShowModalEditStaff();
+                    handlerShowModalDeleteStaff();
+                })
+                .fail(function (jqXHR) {
+                    let str = ``;
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, function (key, value) {
+                            str += `<label id="${key}-error" class="error" for="${key}">${value}</lable><br>`;
+                            $("#" + key).addClass("error");
+                        });
+                    } else {
+                        str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                    }
+                    $("#modalUpdateStaff .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                    $("#modalUpdateStaff .modal-body .modal-alert-danger").html(str);
+                })
+        }
+
+        //set event for button update
+        $("#btnUpdateStaff").on("click", function () {
+            $("#frmUpdateStaff").trigger("submit");
+        });
+
+        $("#modalUpdateStaff").one('hidden.bs.modal', function () {
+            $("#modalUpdateStaff .modal-body .modal-alert-danger").empty();
+            $("#modalUpdateStaff .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#modalUpdateStaff input.error").removeClass("error");
+            $("#frmUpdateStaff")[0].reset();
+        });
+
+
+    </script>
+</th:block>

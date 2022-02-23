@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="firstScript">
+    <script src="/resources/js/jquery-3.6.0.js"></script>
+    <script src="/resources/js/sb-admin-2.min.js"></script>
+    <script src="/resources/js/jquery.number.js"></script>
+    <script src="/resources/js/easy-number-separator.js"></script>
+    <script src="/resources/js/jquery.validate-1.19.3.min.js"></script>
+    <script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/resources/js/sweetalert.min.js"></script>
+    <!--    <script src="/resources/vendor/bootstrap/js/bootstrap.js"></script>-->
+    <script>
+        function clearSpaceNumber(num) {
+            return num.toString().replace(/,/g, '');
+        }
+
+        function separator(numb) {
+            var str = numb.toString().split(".");
+            str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return str.join(".");
+        }
+
+        $('input .inNumber').on('keypress', function (event) {
+            var regex = new RegExp("^[0-9]+$");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+
+
+    </script>
+
+</th:block>

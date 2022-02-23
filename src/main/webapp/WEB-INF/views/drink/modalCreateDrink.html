@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalCreateDrink">
+    <div class="modal" tabindex="-1" id="modalCreateDrink">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm mới thức uống</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+
+                    </div>
+                    <form id="frmCreateDrink">
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label for="drinkNameCreate" class="form-label fw-bold">Tên thức uống</label>
+                                <input type="text" class="form-control" id="drinkNameCreate" name="drinkNameCreate">
+                            </div>
+                            <div class=" mb-3 col-6">
+                                <label for="priceDrinkCreate" class="form-label fw-bold">Giá thức uống</label>
+                                <input type="text" class="form-control number-separator inNumber" id="priceDrinkCreate" name="priceDrinkCreate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <label for="desDrinkCreate" class="form-label fw-bold">Mô tả</label>
+                                <textarea class="form-control" id="desDrinkCreate" name="desDrinkCreate" rows="4" cols="100%"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline-primary" id="btnCreateDrink">Tạo thức uống</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //show modal create
+        $("button.create").on("click", function () {
+            $("#modalCreateDrink").modal("show");
+        });
+
+        function createDrink() {
+            let drink = {
+                drinkName: $("#drinkNameCreate").val(),
+                price: clearSpaceNumber($("#priceDrinkCreate").val()),
+                description: $("#desDrinkCreate").val(),
+            };
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "POST",
+                url: "/api/drinks/create",
+                data: JSON.stringify(drink)
+            })
+                .done(function (data) {
+                    let str = `
+                    <tr id="'tr_'+ ${data.id}">
+                                <td>${data.id}</td>
+                                <td>${data.drinkName}</td>
+                                <td>${separator(data.price)}</td>
+                                <td>${data.description}</td>
+                                <td>${data.createdAt}</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary edit" data-id="${data.id}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger delete"
+                                            data-id="${data.id}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                    `;
+                    $("#tblDrink tbody").prepend(str);
+                    $("#modalCreateDrink").modal("hide");
+                    $("#frmCreateDrink")[0].reset();
+                    swal("Cập nhật thành công","Thức uống mới đã được thêm", "success");
+                    handlerShowModalEdit();
+                    handlerShowModalDelete();
+                })
+                .fail(function (jqXHR) {
+                    let str = ``;
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, function (key, value) {
+                            str += `<label id= "${key}-error" class="error" for="${key}">${value}</label><br>`;
+                            $("#" + key).addClass("error");
+                        });
+                    } else {
+                        str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                    }
+                    $("#modalCreateDrink .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                    $("#modalCreateDrink .modal-body .modal-alert-danger").html(str);
+                })
+        }
+
+        //set event for button create
+        $("#btnCreateDrink").on("click", function () {
+            $("#frmCreateDrink").trigger("submit");
+        })
+
+        //reset modal Create
+        $("#modalCreateDrink").one('hidden.bs.modal', function () {
+            $("#modalCreateDrink .modal-body .modal-alert-danger").empty();
+            $("#modalCreateDrink .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#modalCreateDrink input.error").removeClass("error");
+            $("#frmCreateDrink")[0].reset();
+        });
+    </script>
+</th:block>

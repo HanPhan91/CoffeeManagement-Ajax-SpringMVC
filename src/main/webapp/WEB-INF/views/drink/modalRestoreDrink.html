@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalRestoreDrink">
+  <div class="modal" tabindex="-1" id="modalRestoreDrink">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cập nhật thức uống</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-alert-danger hide">
+
+          </div>
+          <form id="frmRestoreDrink">
+            <div class="row">
+              <div class="mb-3 col-6">
+                <input type="text" id="idDrinkRestore" hidden>
+                <label for="drinkNameRestore" class="form-label fw-bold">Tên thức uống</label>
+                <input type="text" class="form-control" id="drinkNameRestore" name="drinkNameRestore">
+              </div>
+              <div class=" mb-3 col-6">
+                <label for="priceDrinkRestore" class="form-label fw-bold">Giá thức uống</label>
+                <input type="text" class="form-control number-separator inNumber"
+                       id="priceDrinkRestore" name="priceDrinkRestore">
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label for="desDrinkRestore" class="form-label fw-bold">Mô tả</label>
+                <textarea class="form-control" id="desDrinkRestore" name="desDrinkRestore"
+                          rows="4" cols="100%"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-outline-primary" id="btnRestoreDrink">Sửa thức uống</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function restoreDrink() {
+      let drink = {
+        id: $("#idDrinkRestore").val(),
+        drinkName: $("#drinkNameRestore").val(),
+        price: clearSpaceNumber($("#priceDrinkRestore").val()),
+        description: $("#desDrinkRestore").val()
+      };
+      $.ajax({
+        headers: {
+          "Accept": "application/json",
+          "Content-type": "application/json"
+        },
+        type: "PUT",
+        url: "/api/drinks/restore",
+        data: JSON.stringify(drink)
+      })
+              .done(function (data) {
+                let currentRow = $("#tr_" + data.id);
+                currentRow.remove();
+                $("#modalRestoreDrink").modal("hide");
+                $("#frmRestoreDrink")[0].reset();
+                swal("Cập nhật thành công","Thức uống đã được khôi phục", "success");
+              })
+              .fail(function (jqXHR) {
+                let str = ``;
+                if (jqXHR.responseJSON) {
+                  $.each(jqXHR.responseJSON, function (key, value) {
+                    str += `<label id="${key}-error" class="error" for="${key}">${value}</lable><br>`;
+                    $("#" + key).addClass("error");
+                  });
+                } else {
+                  str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                }
+                $("#modalRestoreDrink .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                $("#modalRestoreDrink .modal-body .modal-alert-danger").html(str);
+              })
+    }
+
+    //set event for button Restore
+    $("#btnRestoreDrink").on("click", function () {
+      $("#frmRestoreDrink").trigger("submit");
+    });
+
+    $("#modalRestoreDrink").one('hidden.bs.modal', function () {
+      $("#modalRestoreDrink .modal-body .modal-alert-danger").empty();
+      $("#modalRestoreDrink .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+      $("#modalRestoreDrink input.error").removeClass("error");
+      $("#frmRestoreDrink")[0].reset();
+    });
+  </script>
+</th:block>

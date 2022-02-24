@@ -78,6 +78,44 @@ $(document).ready(function () {
         }
     });
 
+    //validated form Restore
+    $("#frmRestoreDrink").validate({
+        rules: {
+            drinkNameUpdate: {
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            },
+            priceDrinkUpdate: {
+            }
+        },
+        messages: {
+            drinkNameUpdate: {
+                required: "Tên thức uống là bắt buộc",
+                minlength: "Tên thức uống phải nằm trong khoảng 5-50 ký tự",
+                maxlength: "Tên thức uống phải nằm trong khoảng 5-50 ký tự"
+            },
+            priceDrinkUpdate: {
+                required: "Giá thức uống là bắt buộc",
+            }
+        },
+        errorLabelContainer: '#modalRestoreDrink .modal-body .modal-alert-danger',
+        errorPlacement: function (error, element) {
+            error.appendTo("#modalRestoreDrink .modal-body .modal-alert-danger");
+        },
+        showErrors: function (errorMap, errorList) {
+            if (this.numberOfInvalids() > 0) {
+                $("#modalRestoreDrink .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+            } else {
+                $("#modalRestoreDrink .modal-body .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                $("#modalRestoreDrink input.error").removeClass("error");
+            }
+            this.defaultShowErrors();
+        },
+        submitHandler: function () {
+            restoreDrink();
+        }
+    });
 
     //validated form Create
     $("#frmCreateStaff").validate({

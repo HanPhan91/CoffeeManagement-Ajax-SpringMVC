@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -72,5 +74,24 @@ public class DrinkRestController {
         } else {
             throw new DataInputException("Customer's not valid");
         }
+    }
+
+    @PutMapping("/restore")
+    public ResponseEntity<?> doRestore(@Validated @RequestBody Drink drink, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+        Long id = drink.getId();
+        Optional<Drink> optionalDrink = drinkService.findById(id);
+        if (optionalDrink.isPresent()) {
+            drinkService.save(drink);
+            drinkService.restoreDrink(id);
+            Optional<Drink> updateDrink = drinkService.findById(id);
+            return new ResponseEntity<>(updateDrink.get(), HttpStatus.OK);
+        } else {
+            throw new DataInputException("Drink's not valid");
+        }
+
     }
 }

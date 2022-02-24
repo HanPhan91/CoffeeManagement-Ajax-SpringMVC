@@ -1,6 +1,7 @@
 package com.cg.service;
 
 import com.cg.model.Drink;
+import com.cg.model.Staff;
 import com.cg.repository.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,15 @@ public class DrinkServiceImpl implements DrinkService{
     @Override
     public Integer countDrink() {
         return drinkRepository.countDrink();
+    }
+
+    @Override
+    public void restoreDrink(Long id) {
+        drinkRepository.restoreDrink(id);
+    }
+
+    @Override
+    public List<Drink> findAllDeleted() {
+        return drinkRepository.findAllDeleted();
     }
 }

@@ -2,6 +2,7 @@ package com.cg.controller;
 
 
 import com.cg.service.DrinkService;
+import com.cg.service.OrderService;
 import com.cg.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,13 +18,20 @@ public class HomeController {
     DrinkService drinkService;
     @Autowired
     StaffService staffService;
+    @Autowired
+    OrderService orderService;
+
     @GetMapping
     public ModelAndView showHomePage() {
         ModelAndView modelAndView = new ModelAndView();
         int countDrink= drinkService.countDrink();
         int countStaff= staffService.countStaff();
+        String totalAmount = orderService.incomeToday();
+        String totalAmountMonth = orderService.incomeToMonth();
         modelAndView.addObject("countDrink",countDrink);
         modelAndView.addObject("countStaff",countStaff);
+        modelAndView.addObject("totalAmount",totalAmount);
+        modelAndView.addObject("totalAmountMonth",totalAmountMonth);
         modelAndView.setViewName("index");
         return modelAndView;
     }

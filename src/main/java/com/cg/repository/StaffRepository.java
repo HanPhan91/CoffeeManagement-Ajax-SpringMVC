@@ -20,7 +20,8 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("SELECT s FROM Staff s WHERE s.deleted = false ORDER BY s.id DESC")
     List<Staff> findAllNotDeleted();
 
-
+    @Query("SELECT s FROM Staff s WHERE s.deleted = true ORDER BY s.id DESC")
+    List<Staff> findAllDeleted();
 
     @Query("SELECT COUNT(s.id) from Staff s WHERE s.deleted = false")
     Integer countStaff();

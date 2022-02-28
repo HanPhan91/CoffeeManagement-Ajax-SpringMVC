@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div>
+                            <div class="mb-3 col">
                                 <label for="desDrinkDelete" class="form-label fw-bold">Mô tả</label>
                                 <textarea class="form-control" id="desDrinkDelete" name="desDrinkDelete"
                                           rows="4" cols="100%" readonly></textarea>
@@ -62,8 +62,6 @@
             })
                 .done(function (data) {
                     let currentRow = $("#tr_" + data.id);
-                    console.log(data.id);
-                    console.log(currentRow);
                     currentRow.remove();
                     $("#modalDeleteDrink").modal("hide");
                     $("#frmDeleteDrink")[0].reset();
@@ -84,7 +82,7 @@
                 })
         }
 
-        //set event for button update
+        //set event for button delete
         $("#btnDeleteDrink").on("click", function () {
             deleteDrink();
         });

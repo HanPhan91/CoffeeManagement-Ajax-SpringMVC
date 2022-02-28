@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+
+    <th:block th:replace="layout/head :: head"/>
+    <meta charset="UTF-8">
+    <title>Quản lý danh mục</title>
+    <th:block th:replace="layout/firstScript :: firstScript"/>
+</head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"/>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <th:block th:replace="layout/topbar :: topbar"/>
+
+            <!-- Main page -->
+            <div class="container-fluid">
+                <!--Header-->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Danh mục thức uống khả dụng</h1>
+                </div>
+                <div class="row">
+                    <div class="col mb-2">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary createCatalog">
+                                <i class="fa fa-plus-square"></i>
+                                Thêm danh mục mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <table class="table table-hover w-75" id="tblCatalog">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Tên danh mục</th>
+                            <th scope="col" colspan="2" class="text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="catalog: ${catalogs}">
+                            <tr th:id="'tr_'+ ${catalog.id}">
+                                <td th:text="${catalog.id}"></td>
+                                <td th:text="${catalog.catalogName}"></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-primary editCatalog" th:data-id="${catalog.id}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-danger deleteCatalog"
+                                            th:data-id="${catalog.id}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col mb-2">
+                        <div class="d-flex justify-content-end">
+                            <a type="button" class="btn btn-danger restoreCatalog" href="/catalogs/deleted">
+                                <i class="fa fa-trash-restore"></i>
+                                Khôi phục danh mục
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Main Page-->
+        </div>
+        <!-- End Main Content-->
+        <th:block th:replace="layout/footer :: footer"/>
+    </div>
+</div>
+<th:block th:replace="layout/script :: script"/>
+<th:block th:replace="catalogDrink/modalCreateCatalog :: modalCreateCatalog"/>
+<th:block th:replace="catalogDrink/modalUpdateCatalog :: modalUpdateCatalog"/>
+<th:block th:replace="catalogDrink/modalDeleteCatalog :: modalDeleteCatalog"/>
+<script>
+    handlerShowModalDeleteCatalog();
+    handlerShowModalEditCatalog();
+    function handlerShowModalEditCatalog() {
+        $("button.editCatalog").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/catalogs/" + id
+            })
+                .done(function (data) {
+                    $("#idCatalogUpdate").val(data.id);
+                    $("#catalogNameUpdate").val(data.catalogName);
+                    $("#modalUpdateCatalog").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal update catalog error");
+                })
+        });
+    }
+
+    function handlerShowModalDeleteCatalog() {
+        $("button.deleteCatalog").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: "/api/catalogs/" + id
+            })
+                .done(function (data) {
+                    $("#idCatalogDelete").val(data.id);
+                    $("#catalogNameDelete").val(data.catalogName);
+                    $("#modalDeleteCatalog").modal("show");
+                })
+                .fail(function (resp) {
+                    alert("Show modal delete catalog error");
+                })
+        });
+    }
+</script>
+</body>
+</html>

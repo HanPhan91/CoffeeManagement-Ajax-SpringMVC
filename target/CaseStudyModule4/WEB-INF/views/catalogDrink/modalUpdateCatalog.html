@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalUpdateCatalog">
+    <div class="modal" tabindex="-1" id="modalUpdateCatalog">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+                    </div>
+                    <form id="frmUpdateCatalog">
+                        <div class="row">
+                            <input type="text" id="idCatalogUpdate" hidden>
+                            <div class="col">
+                                <label for="catalogNameUpdate" class="form-label fw-bold">Tên danh mục</label>
+                                <input type="text" class="form-control" id="catalogNameUpdate" name="catalogNameUpdate">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline-primary" id="btnUpdateCatalog">Sửa danh mục</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateCatalog() {
+            let catalog = {
+                id: $("#idCatalogUpdate").val(),
+                catalogName: $("#catalogNameUpdate").val(),
+            };
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "PUT",
+                url: "/api/catalogs/update",
+                data: JSON.stringify(catalog)
+            })
+                .done(function (data) {
+                    let str = `
+                        <tr th:id="'tr_'+ ${data.id}">
+                                    <td>${data.id}</td>
+                                    <td>${data.catalogName}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-primary editCatalog" data-id="${data.id}">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger deleteCatalog"
+                                                data-id="${data.id}">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                        </tr>
+                    `;
+                    let currentRow = $("#tr_" + data.id);
+                    currentRow.replaceWith(str);
+                    $("#modalUpdateCatalog").modal("hide");
+                    $("#frmUpdateCatalog")[0].reset();
+                    swal("Cập nhật thành công", "Danh mục đã được chỉnh sửa", "success");
+                    handlerShowModalEditCatalog();
+                    handlerShowModalDeleteCatalog();
+                })
+                .fail(function (jqXHR) {
+                    let str = ``;
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, function (key, value) {
+                            str += `<label id="${key}-error" class="error" for="${key}">${value}</lable><br>`;
+                            $("#" + key).addClass("error");
+                        });
+                    } else {
+                        str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                    }
+                    $("#modalUpdateCatalog .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                    $("#modalUpdateCatalog .modal-body .modal-alert-danger").html(str);
+                })
+        }
+
+        //set event for button update
+        $("#btnUpdateCatalog").on("click", function () {
+            $("#frmUpdateCatalog").trigger("submit");
+        });
+
+        $("#modalUpdateCatalog").one('hidden.bs.modal', function () {
+            $("#modalUpdateCatalog .modal-body .modal-alert-danger").empty();
+            $("#modalUpdateCatalog .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#modalUpdateCatalog input.error").removeClass("error");
+            $("#frmUpdateCatalog")[0].reset();
+        });
+
+
+    </script>
+</th:block>

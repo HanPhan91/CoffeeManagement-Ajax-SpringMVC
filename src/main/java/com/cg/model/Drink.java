@@ -2,7 +2,9 @@ package com.cg.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
@@ -22,7 +24,6 @@ public class Drink {
     private String drinkName;
 
 
-
     @Digits(integer = 12, fraction = 0)
 //    @Column(updatable = false)
     @NotNull(message = "Giá thức uống là bắt buộc")
@@ -40,16 +41,22 @@ public class Drink {
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
-    public Drink(Long id, String drinkName, BigDecimal price, String description, boolean deleted, Date createdAt) {
+    @NotNull(message = "Bắt buộc phải chọn danh mục")
+    @Column(name = "id_catalog")
+    private Long idCatalog;
+
+
+    public Drink() {
+    }
+
+    public Drink(Long id, String drinkName, BigDecimal price, String description, boolean deleted, Date createdAt, Long idCatalog) {
         this.id = id;
         this.drinkName = drinkName;
         this.price = price;
         this.description = description;
         this.deleted = deleted;
         this.createdAt = createdAt;
-    }
-
-    public Drink() {
+        this.idCatalog = idCatalog;
     }
 
     public Long getId() {
@@ -98,5 +105,13 @@ public class Drink {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getIdCatalog() {
+        return idCatalog;
+    }
+
+    public void setIdCatalog(Long idCatalog) {
+        this.idCatalog = idCatalog;
     }
 }

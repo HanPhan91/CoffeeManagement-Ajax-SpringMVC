@@ -2,75 +2,124 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 
-  <th:block th:replace="layout/head :: head"/>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <th:block th:replace="layout/firstScript :: firstScript"/>
+    <th:block th:replace="layout/head :: head"/>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <th:block th:replace="layout/firstScript :: firstScript"/>
 </head>
+
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-  <th:block th:replace="layout/sidebar :: sidebar"/>
-  <!-- Content Wrapper -->
-  <div id="content-wrapper" class="d-flex flex-column">
-    <!-- Main Content -->
-    <div id="content">
-      <th:block th:replace="layout/topbar :: topbar"/>
+    <th:block th:replace="layout/sidebar :: sidebar"/>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <th:block th:replace="layout/topbar :: topbar"/>
 
-      <!-- Main page -->
-      <div class="container-fluid">
-        <!--Header-->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-          <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        </div>
-        <!-- Content Row -->
-        <div class="row justify-content-center">
-
-
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                      Tổng số thức uống hiện tại</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countDrink}"></div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="fas fa-mug-hot fa-2x text-gray-300"></i>
-                  </div>
+            <!-- Main page -->
+            <div class="container-fluid">
+                <!--Header-->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                 </div>
-              </div>
-            </div>
-          </div>
+                <!-- Content Row -->
+                <div class="row justify-content-center">
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-secondary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                            Doanh thu ngày hôm nay
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalAmount"></div>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Doanh thu tháng hiện tại
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800 totalAmountMonth"></div>
+                                    </div>
+
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Tổng số thức uống hiện tại
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                             th:text="${countDrink}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-mug-hot fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
-          <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-              <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                  <div class="col mr-2">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                      Tổng số nhân viên hiện tại</div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${countStaff}"></div>
-                  </div>
-                  <div class="col-auto">
-                    <i class="fas fa-user fa-2x text-gray-300"></i>
-                  </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Tổng số nhân viên hiện tại
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                             th:text="${countStaff}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Content Row -->
-      </div>
-      <!-- End Main Page-->
+                <!-- Content Row -->
+            </div>
+            <!-- End Main Page-->
+        </div>
+        <!-- End Main Content-->
+        <th:block th:replace="layout/footer :: footer"/>
     </div>
-    <!-- End Main Content-->
-    <th:block th:replace="layout/footer :: footer"/>
-  </div>
 </div>
+<script th:inline="javascript">
+    var totalAmount = [[${totalAmount}]];
+    $("div.totalAmount").append(separator(totalAmount));
+
+    var totalAmountMonth = [[${totalAmountMonth}]];
+    $("div.totalAmountMonth").append(separator(totalAmountMonth));
+</script>
 </body>
 </html>

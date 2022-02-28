@@ -32,6 +32,12 @@
                                 Thêm thức uống mới
                             </button>
                         </div>
+                        <div class="d-flex justify-content-end mt-2">
+                            <a type="button" class="btn btn-outline-success" href="/catalogs">
+                                <i class="fa fa-plus-square"></i>
+                                Quản lý danh mục thức uống
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -41,8 +47,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Tên thức uống</th>
                             <th scope="col">Giá</th>
-                            <th scope="col">Mô tả</th>
-                            <th scope="col">Ngày tạo</th>
+                            <th scope="col">Danh mục</th>
                             <th scope="col" colspan="2" class="text-center">Thao tác</th>
                         </tr>
                         </thead>
@@ -52,14 +57,15 @@
                                 <td th:text="${drink.id}"></td>
                                 <td th:text="${drink.drinkName}"></td>
                                 <td class="drinkPrice"></td>
-                                <td th:text="${drink.description}"></td>
-                                <td th:text="${drink.createdAt}"></td>
-                                <td>
+                                <th:block th:each="catalog: ${catalogs}">
+                                    <td th:if="${drink.idCatalog == catalog.id}" th:text="${catalog.catalogName}"></td>
+                                </th:block>
+                                <td class="text-center">
                                     <button type="button" class="btn btn-outline-primary edit" th:data-id="${drink.id}">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button" class="btn btn-outline-danger delete"
                                             th:data-id="${drink.id}">
                                         <i class="fa fa-trash"></i>
@@ -103,13 +109,34 @@
             let id = $(this).data("id");
             $.ajax({
                 type: "GET",
-                url: "/api/drinks/" + id
+                url: "/api/drinks/update/" + id
             })
                 .done(function (data) {
-                    $("#idDrinkUpdate").val(data.id);
-                    $("#drinkNameUpdate").val(data.drinkName);
-                    $("#priceDrinkUpdate").val(separator(data.price));
-                    $("#desDrinkUpdate").val(data.description);
+                    let drinkId;
+                    let drinkName;
+                    let drinkPrice;
+                    let drinkDes;
+                    let catalogId;
+                    for (let i = 0; i < data[0].length; i++) {
+                        drinkId = data[0][i].id;
+                        drinkName = data[0][i].drinkName;
+                        drinkPrice = data[0][i].price;
+                        drinkDes = data[0][i].description;
+                        catalogId = data[0][i].idCatalog;
+                    }
+                    $("#idDrinkUpdate").val(drinkId);
+                    $("#drinkNameUpdate").val(drinkName);
+                    $("#priceDrinkUpdate").val(separator(drinkPrice));
+                    $("#desDrinkUpdate").val(drinkDes);
+                    for (let i = 0; i < data[1].length; i++){
+                        let id = data[1][i].id;
+                        let name = data[1][i].catalogName;
+                        if (id == catalogId) {
+                            $("#catalogsUpdate").append(`<option value=${id} selected>${name}</option>`);
+                        } else {
+                            $("#catalogsUpdate").append(`<option value=${id}>${name}</option>`);
+                        }
+                    }
                     $("#modalUpdateDrink").modal("show");
                 })
                 .fail(function (resp) {
@@ -137,6 +164,7 @@
                 })
         });
     }
+
     handlerShowModalEdit();
     handlerShowModalDelete();
 </script>

@@ -55,4 +55,9 @@ public class StaffServiceImpl implements StaffService {
     public Integer countStaff() {
         return staffRepository.countStaff();
     }
+
+    @Override
+    public List<Staff> findAllDeleted() {
+        return staffRepository.findAllDeleted();
+    }
 }

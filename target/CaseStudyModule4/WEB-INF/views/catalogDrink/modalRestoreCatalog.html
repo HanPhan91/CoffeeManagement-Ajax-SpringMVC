@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalRestoreCatalog">
+    <div class="modal" tabindex="-1" id="modalRestoreCatalog">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Khôi phục danh mục</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+                    </div>
+                    <form id="frmRestoreCatalog">
+                        <div class="row">
+                            <input type="text" id="idCatalogRestore" hidden>
+                            <div class="col">
+                                <label for="catalogNameRestore" class="form-label fw-bold">Tên danh mục</label>
+                                <input type="text" class="form-control" id="catalogNameRestore" name="catalogNameRestore">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline-warning" id="btnRestoreCatalog">Khôi phục danh mục</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function restoreCatalog() {
+            let catalog = {
+                id: $("#idCatalogRestore").val(),
+                catalogName: $("#catalogNameRestore").val(),
+            };
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "PUT",
+                url: "/api/catalogs/restore",
+                data: JSON.stringify(catalog)
+            })
+                .done(function (data) {
+                    let currentRow = $("#tr_" + data.id);
+                    currentRow.remove();
+                    $("#modalRestoreCatalog").modal("hide");
+                    $("#frmRestoreCatalog")[0].reset();
+                    swal("Cập nhật thành công","Danh mục đã được khôi phục", "success");
+                })
+                .fail(function (jqXHR) {
+                    let str = ``;
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, function (key, value) {
+                            str += `<label id="${key}-error" class="error" for="${key}">${value}</lable><br>`;
+                            $("#" + key).addClass("error");
+                        });
+                    } else {
+                        str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                    }
+                    $("#modalRestoreCatalog .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                    $("#modalRestoreCatalog .modal-body .modal-alert-danger").html(str);
+                })
+        }
+
+        //set event for button Restore
+        $("#btnRestoreCatalog").on("click", function () {
+            $("#frmRestoreCatalog").trigger("submit");
+        });
+
+        $("#modalRestoreCatalog").one('hidden.bs.modal', function () {
+            $("#modalRestoreCatalog .modal-body .modal-alert-danger").empty();
+            $("#modalRestoreCatalog .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#modalRestoreCatalog input.error").removeClass("error");
+            $("#frmRestoreCatalog")[0].reset();
+        });
+
+
+    </script>
+</th:block>

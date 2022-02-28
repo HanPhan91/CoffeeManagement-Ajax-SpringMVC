@@ -32,7 +32,7 @@
                             <th scope="col">Giá</th>
                             <th scope="col">Mô tả</th>
                             <th scope="col">Ngày tạo</th>
-                            <th scope="col" colspan="2">Thao tác</th>
+                            <th scope="col" colspan="2" class="text-center">Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -43,11 +43,10 @@
                                 <td class="drinkPrice"></td>
                                 <td th:text="${drink.description}"></td>
                                 <td th:text="${drink.createdAt}"></td>
-                                <td>
+                                <td class="text-center">
                                     <button type="button" class="btn btn-outline-danger restore" th:data-id="${drink.id}">
                                         <i class="fa fa-trash-restore"></i>
                                     </button>
-                                </td>
                                 </td>
                             </tr>
                             <script th:inline="javascript">
@@ -86,6 +85,7 @@
                     $("#drinkNameRestore").val(data.drinkName);
                     $("#priceDrinkRestore").val(separator(data.price));
                     $("#desDrinkRestore").val(data.description);
+                    $("#idCatalogDrinkRestore").val(data.idCatalog);
                     $("#modalRestoreDrink").modal("show");
                 })
                 .fail(function (resp) {

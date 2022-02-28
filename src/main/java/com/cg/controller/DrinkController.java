@@ -1,6 +1,8 @@
 package com.cg.controller;
 
+import com.cg.model.CatalogDrink;
 import com.cg.model.Drink;
+import com.cg.service.CatalogDrinkService;
 import com.cg.service.DrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,8 @@ import java.util.List;
 public class DrinkController {
     @Autowired
     private DrinkService drinkService;
+    @Autowired
+    private CatalogDrinkService catalogDrinkService;
 
 
     @GetMapping
@@ -22,6 +26,8 @@ public class DrinkController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("drink/list");
         List<Drink> drinks = drinkService.findAllNotDeleted();
+        List<CatalogDrink> catalogDrinks = catalogDrinkService.findAllNotDeleted();
+        modelAndView.addObject("catalogs", catalogDrinks);
         modelAndView.addObject("drinks", drinks);
         return modelAndView;
     }

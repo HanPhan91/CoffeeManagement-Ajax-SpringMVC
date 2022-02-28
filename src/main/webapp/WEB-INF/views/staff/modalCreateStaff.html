@@ -31,7 +31,8 @@
                             </div>
                             <div class=" mb-3 col-6">
                                 <label for="staffAddressCreate" class="form-label fw-bold">Địa chỉ</label>
-                                <input type="text" class="form-control" id="staffAddressCreate" name="staffAddressCreate">
+                                <input type="text" class="form-control" id="staffAddressCreate"
+                                       name="staffAddressCreate">
                             </div>
                         </div>
                     </form>
@@ -90,7 +91,7 @@
                     $("#tblStaff tbody").prepend(str);
                     $("#modalCreateStaff").modal("hide");
                     $("#frmCreateStaff")[0].reset();
-                    swal("Cập nhật thành công","Thức uống mới đã được thêm", "success");
+                    swal("Cập nhật thành công", "Thức uống mới đã được thêm", "success");
                     handlerShowModalEditStaff();
                     handlerShowModalDeleteStaff();
                 })

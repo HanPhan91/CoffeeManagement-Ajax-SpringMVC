@@ -12,5 +12,7 @@ public interface StaffService extends IGeneralService<Staff>{
 
     List<Staff> findAllNotDeleted();
 
+    List<Staff> findAllDeleted();
+
     Integer countStaff();
 }

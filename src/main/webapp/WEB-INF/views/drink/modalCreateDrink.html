@@ -19,15 +19,23 @@
                                 <label for="drinkNameCreate" class="form-label fw-bold">Tên thức uống</label>
                                 <input type="text" class="form-control" id="drinkNameCreate" name="drinkNameCreate">
                             </div>
-                            <div class=" mb-3 col-6">
+                            <div class="mb-3 col-6">
                                 <label for="priceDrinkCreate" class="form-label fw-bold">Giá thức uống</label>
-                                <input type="text" class="form-control number-separator inNumber" id="priceDrinkCreate" name="priceDrinkCreate">
+                                <input type="text" class="form-control number-separator inNumber" id="priceDrinkCreate"
+                                       name="priceDrinkCreate">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="catalogsCreate" class="form-label fw-bold">Danh mục</label>
+                                <select class="custom-select" id="catalogsCreate">
+
+                                </select>
                             </div>
                         </div>
                         <div class="row">
-                            <div>
+                            <div class="mb-3 col">
                                 <label for="desDrinkCreate" class="form-label fw-bold">Mô tả</label>
-                                <textarea class="form-control" id="desDrinkCreate" name="desDrinkCreate" rows="4" cols="100%"></textarea>
+                                <textarea class="form-control" id="desDrinkCreate" name="desDrinkCreate" rows="4"
+                                          cols="100%"></textarea>
                             </div>
                         </div>
                     </form>
@@ -42,7 +50,25 @@
     <script>
         //show modal create
         $("button.create").on("click", function () {
-            $("#modalCreateDrink").modal("show");
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: "/api/drinks/create",
+            })
+                .done(function (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        let id = data[i].id;
+                        let name = data[i].catalogName;
+                        $("#catalogsCreate").append(`<option value=${id}>${name}</option>`);
+                    }
+                    $("#modalCreateDrink").modal("show");
+                })
+                .fail(function (jqXHR) {
+                    console.log("get catalogs fails");
+                })
         });
 
         function createDrink() {
@@ -50,6 +76,7 @@
                 drinkName: $("#drinkNameCreate").val(),
                 price: clearSpaceNumber($("#priceDrinkCreate").val()),
                 description: $("#desDrinkCreate").val(),
+                idCatalog: $("#catalogsCreate").val()
             };
 
             $.ajax({
@@ -62,21 +89,30 @@
                 data: JSON.stringify(drink)
             })
                 .done(function (data) {
+                    let drinkId;
+                    let drinkName;
+                    let drinkPrice;
+                    let drinkDes;
+                    for (let i = 0; i < data[0].length; i++) {
+                         drinkId = data[0][i].id;
+                         drinkName = data[0][i].drinkName;
+                         drinkPrice = data[0][i].price;
+                    }
+                    let catalogName = data[1][0];
                     let str = `
-                    <tr id="'tr_'+ ${data.id}">
-                                <td>${data.id}</td>
-                                <td>${data.drinkName}</td>
-                                <td>${separator(data.price)}</td>
-                                <td>${data.description}</td>
-                                <td>${data.createdAt}</td>
+                    <tr id="'tr_'+ ${drinkId}">
+                                <td>${drinkId}</td>
+                                <td>${drinkName}</td>
+                                <td>${separator(drinkPrice)}</td>
+                                <td>${catalogName}</td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-primary edit" data-id="${data.id}">
+                                    <button type="button" class="btn btn-outline-primary edit text-center" data-id="${drinkId}">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-danger delete"
-                                            data-id="${data.id}">
+                                    <button type="button" class="btn btn-outline-danger delete text-center"
+                                            data-id="${drinkId}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </td>
@@ -84,8 +120,9 @@
                     `;
                     $("#tblDrink tbody").prepend(str);
                     $("#modalCreateDrink").modal("hide");
+                    $("#catalogsCreate option").remove();
                     $("#frmCreateDrink")[0].reset();
-                    swal("Cập nhật thành công","Thức uống mới đã được thêm", "success");
+                    swal("Cập nhật thành công", "Thức uống mới đã được thêm", "success");
                     handlerShowModalEdit();
                     handlerShowModalDelete();
                 })
@@ -114,6 +151,7 @@
             $("#modalCreateDrink .modal-body .modal-alert-danger").empty();
             $("#modalCreateDrink .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
             $("#modalCreateDrink input.error").removeClass("error");
+            $("#catalogsCreate option").remove();
             $("#frmCreateDrink")[0].reset();
         });
     </script>

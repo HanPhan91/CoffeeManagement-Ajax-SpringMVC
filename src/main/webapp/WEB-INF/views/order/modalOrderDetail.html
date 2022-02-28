@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalOrderDetail">
+    <div class="modal" tabindex="-1" id="modalOrderDetail">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm mới thức uống</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+
+                    </div>
+                        <div class="row">
+                            <table class="table table-hover" id="tblListOrderDetail">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Mã order</th>
+                                    <th scope="col" class="text-center">Tên thức uống</th>
+                                    <th scope="col" class="text-center">Số lượng</th>
+                                    <th scope="col" class="text-right">Tổng tiền (VND)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //show modal detail
+        $("button.showDetail").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: "/api/orders/" + id,
+            })
+                .done(function (data) {
+                    let str;
+                    for (let i = 0; i < data.length; i++) {
+                        str+=`
+                            <tr>
+                                <td>${data[i].order.id}</td>
+                                <td class="text-center">${data[i].drink.drinkName}</td>
+                                <td class="text-center">${data[i].quantity}</td>
+                                <td class="text-right">${separator(data[i].totalPrice)}</td>
+                            `;
+                    }
+                    $("#modalOrderDetail #tblListOrderDetail tbody").append(str);
+                    $("#modalOrderDetail").modal("show");
+                })
+                .fail(function (jqXHR) {
+                    console.log("get order detail fails");
+                })
+        });
+        $("#modalOrderDetail").one('hidden.bs.modal', function (){
+            $("#modalOrderDetail #tblListOrderDetail tbody tr").remove();
+        })
+    </script>
+</th:block>

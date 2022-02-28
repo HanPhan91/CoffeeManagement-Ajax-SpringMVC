@@ -25,9 +25,15 @@
                                 <input type="text" class="form-control number-separator inNumber"
                                        id="priceDrinkUpdate" name="priceDrinkUpdate">
                             </div>
+                            <div class=" mb-3 col-6">
+                                <label for="catalogsUpdate" class="form-label fw-bold">Danh mục</label>
+                                <select class="custom-select" id="catalogsUpdate">
+
+                                </select>
+                            </div>
                         </div>
                         <div class="row">
-                            <div>
+                            <div class="mb-3 col">
                                 <label for="desDrinkUpdate" class="form-label fw-bold">Mô tả</label>
                                 <textarea class="form-control" id="desDrinkUpdate" name="desDrinkUpdate"
                                           rows="4" cols="100%"></textarea>
@@ -48,7 +54,8 @@
                 id: $("#idDrinkUpdate").val(),
                 drinkName: $("#drinkNameUpdate").val(),
                 price: clearSpaceNumber($("#priceDrinkUpdate").val()),
-                description: $("#desDrinkUpdate").val()
+                description: $("#desDrinkUpdate").val(),
+                idCatalog: $("#catalogsUpdate").val()
             };
             $.ajax({
                 headers: {
@@ -60,29 +67,40 @@
                 data: JSON.stringify(drink)
             })
                 .done(function (data) {
+                    let drinkId;
+                    let drinkName;
+                    let drinkPrice;
+                    let drinkDes;
+                    for (let i = 0; i < data[0].length; i++) {
+                        drinkId = data[0][i].id;
+                        drinkName = data[0][i].drinkName;
+                        drinkPrice = data[0][i].price;
+                    }
+                    let catalogName = data[1][0];
                     let str = `
-                    <tr id="'tr_'+ ${data.id}">
-                                <td>${data.id}</td>
-                                <td>${data.drinkName}</td>
-                                <td>${separator(data.price)}</td>
-                                <td>${data.description}</td>
-                                <td>${data.createdAt}</td>
+                    <tr id="'tr_'+ ${drinkId}">
+                                <td>${drinkId}</td>
+                                <td>${drinkName}</td>
+                                <td>${separator(drinkPrice)}</td>
+                                <td>${catalogName}</td>
                         <td>
-                            <button type="button" class="btn btn-outline-primary edit" data-id="${drink.id}">
+                            <button type="button" class="btn btn-outline-primary edit" data-id="${drinkId}">
                                 <i class="fa fa-edit"></i>
                             </button>
                         </td>
                         <td>
                             <button type="button" class="btn btn-outline-danger delete"
-                                    data-id="${drink.id}">
+                                    data-id="${drinkId}">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
                     </tr>
                     `;
-                    let currentRow = $("#tr_" + data.id);
+                    let currentRow = $("#tr_" + drinkId);
                     currentRow.replaceWith(str);
                     $("#modalUpdateDrink").modal("hide");
+                    $("#frmUpdateDrink")[0].reset();
+                    $("#modalUpdateDrink input.error").removeClass("error");
                     $("#frmUpdateDrink")[0].reset();
                     swal("Cập nhật thành công","Thức uống đã được cập nhật", "success");
                     handlerShowModalEdit();

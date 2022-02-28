@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,7 +50,8 @@ public class StaffRestController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> doUpdate(@Validated @RequestBody Staff staff, BindingResult bindingResult) {
+    public ResponseEntity<?> doUpdate(@Validated @RequestBody Staff staff,
+                                      BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return appUtil.mapErrorToResponse(bindingResult);
@@ -76,4 +78,6 @@ public class StaffRestController {
             throw new DataInputException("Customer's not valid");
         }
     }
+
+
 }

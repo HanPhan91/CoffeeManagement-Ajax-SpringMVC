@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:fragment="modalCreateOrder">
+    <div class="modal" tabindex="-1" id="modalCreateOrder">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tạo order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide">
+
+                    </div>
+                    <form id="frmCreateOrder">
+                        <table class="table table-hover" id="tblOrderModal">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" colspan="4" class="text-center">Tên thức uống</th>
+                                <th scope="col" class="text-center">Số lượng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-outline-primary" id="btnCreateOrder">Tạo order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("button.submit_cart").on("click", function () {
+            $("#tblOrderModal tbody tr").remove();
+            $("#modalCreateOrder .modal-body #frmCreateOrder div").remove();
+            let totalAmount = 0;
+            let str;
+            for (let i = 0; i < Carts.length; i++) {
+                totalAmount += Carts[i].drinkQuantity * Carts[i].price;
+                str +=
+                    `<tr id="tr_${Carts[i].drinkId}">
+                    <input value="${Carts[i].drinkId}" class="idDrinkOrder" hidden>
+                    <td>${i + 1}</td>
+                    <td colspan="4" class="text-center">${Carts[i].drinkName}</td>
+                    <td class="text-center"><input value="${Carts[i].drinkQuantity}" class="w-25 quantityDrink" type="text" readonly></td>
+                </tr>
+            `;
+            }
+            $("#tblOrderModal tbody").append(str);
+            let total = `<div class="row">
+                        <div class="col-9 text-right">
+                            Tổng tiền:
+                        </div>
+                        <div class="col-3 text-right text-danger font-weight-bold text-total">
+                            ${separator(totalAmount)}
+                        </div>
+                      </div>
+                    `;
+            $("#modalCreateOrder .modal-body #frmCreateOrder").append(total);
+            $("#modalCreateOrder").modal("show");
+        });
+
+        function createOrder() {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "POST",
+                url: "/api/orders/create",
+                data: JSON.stringify(Carts)
+            })
+                .done(function (data) {
+                    $("#modalCreateOrder").modal("hide");
+                    $("#frmCreateOrder")[0].reset();
+                    $("#modalCreateOrder #tblOrderModal tbody tr").remove();
+                    $("#tblOrder tbody tr").remove();
+                    Carts = [];
+                    swal("Cập nhật thành công", "Order mới đã được tạo", "success");
+                })
+                .fail(function (jqXHR) {
+                    let str = ``;
+                    if (jqXHR.responseJSON) {
+                        $.each(jqXHR.responseJSON, function (key, value) {
+                            str += `<label id= "${key}-error" class="error" for="${key}">${value}</label><br>`;
+                            $("#" + key).addClass("error");
+                        });
+                    } else {
+                        str += `<label id= "message-error" class= "error" for= "message">ERROR_400</label>`;
+                    }
+                    $("#modalCreateOrder .modal-body .modal-alert-danger").removeClass("hide").addClass("show");
+                    $("#modalCreateOrder .modal-body .modal-alert-danger").html(str);
+                })
+        }
+
+        //set event for button create
+        $("#btnCreateOrder").on("click", function () {
+            createOrder();
+        })
+
+        //reset modal Create
+        $("#modalCreateOrder").one('hidden.bs.modal', function () {
+            $("#modalCreateOrder .modal-body .modal-alert-danger").empty();
+            $("#modalCreateOrder .modal-body .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#modalCreateOrder input.error").removeClass("error");
+            $("#frmCreateOrder")[0].reset();
+        });
+    </script>
+</th:block>

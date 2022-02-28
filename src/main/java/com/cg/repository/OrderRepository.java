@@ -16,4 +16,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "SELECT SUM(total_amount) FROM orders o WHERE MONTH(o.created_at) = MONTH(CURDATE())" +
             "AND YEAR(o.created_at) = YEAR(CURDATE()); ", nativeQuery = true)
     String incomeToMonth();
+
+    @Query(value = "SELECT COUNT(id) FROM orders o WHERE DAY(o.created_at) = DAY(CURDATE()) \n" +
+            "AND MONTH(o.created_at) = MONTH(CURDATE()) AND YEAR(o.created_at) = YEAR(CURDATE()) ;", nativeQuery = true)
+    String orderToday();
 }

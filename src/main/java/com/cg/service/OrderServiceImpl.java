@@ -51,4 +51,9 @@ public class OrderServiceImpl implements OrderService {
     public String incomeToMonth() {
         return orderRepository.incomeToMonth();
     }
+
+    @Override
+    public String orderToday() {
+        return orderRepository.orderToday();
+    }
 }

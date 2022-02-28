@@ -10,4 +10,5 @@ import java.math.BigDecimal;
 public interface OrderService extends IGeneralService<Order> {
     public String incomeToday();
     public String incomeToMonth();
+    String orderToday();
 }

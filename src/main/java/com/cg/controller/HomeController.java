@@ -30,10 +30,12 @@ public class HomeController {
         int countStaff= staffService.countStaff();
         String totalAmount = orderService.incomeToday();
         String totalAmountMonth = orderService.incomeToMonth();
+        String orderCount = orderService.orderToday();
         modelAndView.addObject("countDrink",countDrink);
         modelAndView.addObject("countStaff",countStaff);
         modelAndView.addObject("totalAmount",totalAmount);
         modelAndView.addObject("totalAmountMonth",totalAmountMonth);
+        modelAndView.addObject("orderCount",orderCount);
         modelAndView.setViewName("index");
         return modelAndView;
     }

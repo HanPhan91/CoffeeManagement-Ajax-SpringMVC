@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-
     <th:block th:replace="layout/head :: head"/>
     <meta charset="UTF-8">
     <title>Dashboard</title>
@@ -72,6 +71,27 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            Tổng order trong ngày
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                             th:text="${orderCount}"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                             Tổng số thức uống hiện tại
                                         </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"
@@ -84,7 +104,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
@@ -117,20 +136,16 @@
 <script th:inline="javascript">
     let totalAmount = parseInt([[${totalAmount}]]);
     if (totalAmount > 0) {
-        $("div.totalAmount").append(separator(totalAmount));
-    }
-    else {
-        $("div.totalAmount").append("0");
+        $("div.totalAmount").append(separator(totalAmount) + "đ");
+    } else {
+        $("div.totalAmount").append("0đ");
     }
     let totalAmountMonth = parseInt([[${totalAmountMonth}]]);
-    if (totalAmountMonth > 0){
-        $("div.totalAmountMonth").append(separator(totalAmountMonth));
+    if (totalAmountMonth > 0) {
+        $("div.totalAmountMonth").append(separator(totalAmountMonth) + "đ");
+    } else {
+        $("div.totalAmountMonth").append("0đ");
     }
-    else {
-        $("div.totalAmountMonth").append("0");
-    }
-
-
 </script>
 </body>
 </html>

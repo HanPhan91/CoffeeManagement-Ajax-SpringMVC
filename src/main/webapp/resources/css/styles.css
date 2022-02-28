@@ -50,3 +50,6 @@ input.error {
 .text-total{
     font-size: 25px;
 }
+div .vh-50{
+    height: 50vh !important;
+}

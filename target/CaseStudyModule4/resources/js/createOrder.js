@@ -1,5 +1,5 @@
 // $(document).ready(function () {
-function Drink(drinkId, drinkName, drinkQuantity,price) {
+function Drink(drinkId, drinkName, drinkQuantity, price) {
     this.drinkId = drinkId;
     this.drinkName = drinkName;
     this.drinkQuantity = 0;
@@ -7,7 +7,7 @@ function Drink(drinkId, drinkName, drinkQuantity,price) {
 }
 
 for (let i = 0; i < listDrink.length; i++) {
-    Drinks.push(new Drink(listDrink[i].id, listDrink[i].drinkName,0, listDrink[i].price));
+    Drinks.push(new Drink(listDrink[i].id, listDrink[i].drinkName, 0, listDrink[i].price));
 }
 
 function handlerButtonAddCart() {
@@ -25,12 +25,11 @@ function handlerButtonRemoveCart() {
 }
 
 function handlerInputQuantity(drink) {
-    $("#tr_"+ drink.drinkId + " td input.quantityDrink").on("change", function () {
+    $("#tr_" + drink.drinkId + " td input.quantityDrink").on("change", function () {
         if ($(this).val() < 1) {
             alert("Số lượng phải lớn hơn 0");
             $(this).val(1);
-        }
-        else {
+        } else {
             drink.drinkQuantity = parseInt($(this).val());
         }
     });
@@ -123,6 +122,34 @@ function removeDrinkInCart(id) {
     $("#tblOrder tbody #tr_" + id).remove();
 }
 
+$("input.search").on('input', function () {
+    let value = $(this).val().toLowerCase();
+    if (value !== '') {
+        $("#tblDrink tbody tr").remove();
+        let str;
+        for (let i = 0; i < Drinks.length; i++) {
+            if (Drinks[i].drinkName.toLowerCase().includes(value)) {
+                str =
+                    `<tr id="tr_${Drinks[i].drinkId}">
+                    <input value="${Drinks[i].drinkId}" id="idDrinkPre" hidden>
+                    <td>${Drinks[i].drinkName}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-primary addCart"
+                                data-id="${Drinks[i].drinkId}">
+                            <i class="fa fa-plus-square"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                $("#tblDrink tbody").append(str);
+
+            }
+        }
+        handlerButtonAddCart();
+    } else {
+        $("#tblDrink tbody tr").remove();
+        showDrink();
+    }
+});
 
 
 // });
